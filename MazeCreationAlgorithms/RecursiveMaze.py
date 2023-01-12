@@ -13,6 +13,10 @@ def generate_recursive_maze(draw, grid):
 
 
 def recursive_division_maze(draw, grid, row_start, row_end, col_start, col_end, orientation):
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+            pygame.quit()
+
     if row_end < row_start or col_end < col_start:
         return
 
@@ -60,6 +64,9 @@ def generate_surrouding_walls(draw, grid):
     closed_set = []
 
     for i in range(len(grid[0])):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                pygame.quit()
         current_up = grid[0][i]
         current_down = grid[len(grid) - 1][i]
         if current_up not in closed_set:
@@ -71,6 +78,9 @@ def generate_surrouding_walls(draw, grid):
         draw()
 
     for i in range(len(grid)):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                pygame.quit()
         current_left = grid[i][0]
         current_right = grid[i][len(grid[0]) - 1]
         if current_left not in closed_set:

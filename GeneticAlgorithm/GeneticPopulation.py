@@ -69,7 +69,6 @@ class GeneticPopulation():
             if self.players[bestPlayer].brain.step < self.minStep:
                 self.new_min_step = True
                 self.minStep = self.players[bestPlayer].brain.step
-                print(f"New Shortest Path: {self.minStep} steps")
         return bestPlayer
 
     def reconstruct_path(self, start, came_from):
