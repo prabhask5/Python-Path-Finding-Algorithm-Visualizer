@@ -465,7 +465,7 @@ while run:
                         path_found, intersect_node = bidirectional_astar(lambda: draw(
                             screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), grid, start, end, came_from_start, came_from_end)
                         if path_found:
-                            reconstruct_path_bidirectional(came_from_start, came_from_end, intersect_node, intersect_node, start, end, lambda: draw(
+                            path_length = reconstruct_path_bidirectional(came_from_start, came_from_end, intersect_node, intersect_node, start, end, lambda: draw(
                                 screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
                             start.make_start()
                             end.make_end()
@@ -479,7 +479,7 @@ while run:
                         path_found = genetic(lambda: draw(
                             screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), start, end, came_from)
                         if path_found:
-                            reconstruct_path(came_from, start, lambda: draw(
+                            path_length = reconstruct_path(came_from, start, lambda: draw(
                                 screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
                             start.make_start()
                             end.make_end()
@@ -493,7 +493,7 @@ while run:
                         path_found = dfs(lambda: draw(
                             screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), start, end, came_from)
                         if path_found:
-                            reconstruct_path(came_from, end, lambda: draw(
+                            path_length = reconstruct_path(came_from, end, lambda: draw(
                                 screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
                             start.make_start()
                             end.make_end()
@@ -507,7 +507,7 @@ while run:
                         path_found = bfs(lambda: draw(
                             screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), start, end, came_from)
                         if path_found:
-                            reconstruct_path(came_from, end, lambda: draw(
+                            path_length = reconstruct_path(came_from, end, lambda: draw(
                                 screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
                             start.make_start()
                             end.make_end()
@@ -521,7 +521,7 @@ while run:
                         path_found, intersect_node = bidirectional_bfs(lambda: draw(
                             screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), start, end, came_from_start, came_from_end)
                         if path_found:
-                            reconstruct_path_bidirectional(came_from_start, came_from_end, intersect_node, intersect_node, start, end, lambda: draw(
+                            path_length = reconstruct_path_bidirectional(came_from_start, came_from_end, intersect_node, intersect_node, start, end, lambda: draw(
                                 screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
                             start.make_start()
                             end.make_end()
@@ -535,7 +535,7 @@ while run:
                         path_found = greedy(lambda: draw(
                             screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), start, end, came_from)
                         if path_found:
-                            reconstruct_path(came_from, end, lambda: draw(
+                            path_length = reconstruct_path(came_from, end, lambda: draw(
                                 screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
                             start.make_start()
                             end.make_end()
@@ -549,7 +549,7 @@ while run:
                         path_found = random_walk(lambda: draw(
                             screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), start, end, came_from)
                         if path_found:
-                            reconstruct_path(came_from, end, lambda: draw(
+                            path_length = reconstruct_path(came_from, end, lambda: draw(
                                 screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
                             start.make_start()
                             end.make_end()
