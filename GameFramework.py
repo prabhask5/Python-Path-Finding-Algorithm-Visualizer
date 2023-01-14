@@ -338,7 +338,7 @@ def get_clicked_pos(pos, cols, rows, width, height):
     return row, col
 
 
-def reconstruct_path(came_from, current, draw):
+def reconstruct_path(came_from, current, start, end, draw):
     steps = 0
     while current in came_from:
         steps += 1
@@ -451,10 +451,8 @@ while run:
                         path_found = astar(lambda: draw(
                             screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), grid, start, end, came_from)
                         if path_found:
-                            path_length = reconstruct_path(came_from, end, lambda: draw(
+                            path_length = reconstruct_path(came_from, end, start, end, lambda: draw(
                                 screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
-                            start.make_start()
-                            end.make_end()
                             help_text = f"Path length: {path_length}"
                         else:
                             help_text = "Unfortunately, no path was found between the current start and end nodes."
@@ -467,8 +465,6 @@ while run:
                         if path_found:
                             path_length = reconstruct_path_bidirectional(came_from_start, came_from_end, intersect_node, intersect_node, start, end, lambda: draw(
                                 screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
-                            start.make_start()
-                            end.make_end()
                             help_text = f"Path length: {path_length}"
                         else:
                             help_text = "Unfortunately, no path was found between the current start and end nodes."
@@ -479,10 +475,8 @@ while run:
                         path_found = genetic(lambda: draw(
                             screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), start, end, came_from)
                         if path_found:
-                            path_length = reconstruct_path(came_from, start, lambda: draw(
+                            path_length = reconstruct_path(came_from, start, start, end, lambda: draw(
                                 screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
-                            start.make_start()
-                            end.make_end()
                             help_text = f"Path length: {path_length}"
                         else:
                             help_text = "Unfortunately, no path was found between the current start and end nodes."
@@ -493,10 +487,8 @@ while run:
                         path_found = dfs(lambda: draw(
                             screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), start, end, came_from)
                         if path_found:
-                            path_length = reconstruct_path(came_from, end, lambda: draw(
+                            path_length = reconstruct_path(came_from, end, start, end, lambda: draw(
                                 screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
-                            start.make_start()
-                            end.make_end()
                             help_text = f"Path length: {path_length}"
                         else:
                             help_text = "Unfortunately, no path was found between the current start and end nodes."
@@ -507,10 +499,8 @@ while run:
                         path_found = bfs(lambda: draw(
                             screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), start, end, came_from)
                         if path_found:
-                            path_length = reconstruct_path(came_from, end, lambda: draw(
+                            path_length = reconstruct_path(came_from, end, start, end, lambda: draw(
                                 screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
-                            start.make_start()
-                            end.make_end()
                             help_text = f"Path length: {path_length}"
                         else:
                             help_text = "Unfortunately, no path was found between the current start and end nodes."
@@ -523,8 +513,6 @@ while run:
                         if path_found:
                             path_length = reconstruct_path_bidirectional(came_from_start, came_from_end, intersect_node, intersect_node, start, end, lambda: draw(
                                 screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
-                            start.make_start()
-                            end.make_end()
                             help_text = f"Path length: {path_length}"
                         else:
                             help_text = "Unfortunately, no path was found between the current start and end nodes."
@@ -535,10 +523,8 @@ while run:
                         path_found = greedy(lambda: draw(
                             screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), start, end, came_from)
                         if path_found:
-                            path_length = reconstruct_path(came_from, end, lambda: draw(
+                            path_length = reconstruct_path(came_from, end, start, end, lambda: draw(
                                 screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
-                            start.make_start()
-                            end.make_end()
                             help_text = f"Path length: {path_length}"
                         else:
                             help_text = "Unfortunately, no path was found between the current start and end nodes."
@@ -549,10 +535,8 @@ while run:
                         path_found = random_walk(lambda: draw(
                             screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), start, end, came_from)
                         if path_found:
-                            path_length = reconstruct_path(came_from, end, lambda: draw(
+                            path_length = reconstruct_path(came_from, end, start, end, lambda: draw(
                                 screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
-                            start.make_start()
-                            end.make_end()
                             help_text = f"Path length: {path_length}"
                         else:
                             help_text = "Unfortunately, no path was found between the current start and end nodes."

@@ -48,10 +48,10 @@ def bidirectional_astar(draw, grid, start, end, came_from_start, came_from_end):
                     count_start += 1
                     open_set_start.put(
                         (f_score_start[neighbor], count_start, neighbor))
-                    if not neighbor.is_closed_secondary():
+                    if not neighbor.is_closed_secondary() and neighbor is not start and neighbor is not end:
                         neighbor.make_open()
 
-            if current_start_side is not start:
+            if current_start_side is not start and current_start_side is not end:
                 current_start_side.make_closed()
             closed_set_start.append(current_start_side)
 
@@ -69,10 +69,10 @@ def bidirectional_astar(draw, grid, start, end, came_from_start, came_from_end):
                     count_end += 1
                     open_set_end.put(
                         (f_score_end[neighbor], count_end, neighbor))
-                    if not neighbor.is_closed():
+                    if not neighbor.is_closed() and neighbor is not start and neighbor is not end:
                         neighbor.make_open_secondary()
 
-            if current_end_side is not end:
+            if current_end_side is not end and current_end_side is not start:
                 current_end_side.make_closed_secondary()
             closed_set_end.append(current_end_side)
 

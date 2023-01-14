@@ -22,10 +22,11 @@ def bfs(draw, start, end, came_from):
                 if neighbor not in closed_set:
                     came_from[neighbor] = current
                     open_set.put(neighbor)
-                    neighbor.make_open()
+                    if neighbor is not start and neighbor is not end:
+                        neighbor.make_open()
             draw()
 
-            if current is not start:
+            if current is not start and current is not end:
                 current.make_closed()
             closed_set.append(current)
 

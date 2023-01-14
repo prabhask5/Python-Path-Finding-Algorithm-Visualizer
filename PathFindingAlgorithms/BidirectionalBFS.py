@@ -26,10 +26,10 @@ def bidirectional_bfs(draw, start, end, came_from_start, came_from_end):
                 if neighbor not in closed_set_start:
                     came_from_start[neighbor] = current_start_side
                     open_set_start.put(neighbor)
-                    if not neighbor.is_closed_secondary():
+                    if not neighbor.is_closed_secondary() and neighbor is not start and neighbor is not end:
                         neighbor.make_open()
 
-            if current_start_side is not start:
+            if current_start_side is not start and current_start_side is not end:
                 current_start_side.make_closed()
             closed_set_start.append(current_start_side)
 
@@ -41,10 +41,10 @@ def bidirectional_bfs(draw, start, end, came_from_start, came_from_end):
                 if neighbor not in closed_set_end:
                     came_from_end[neighbor] = current_end_side
                     open_set_end.put(neighbor)
-                    if not neighbor.is_closed():
+                    if not neighbor.is_closed() and neighbor is not start and neighbor is not end:
                         neighbor.make_open_secondary()
 
-            if current_end_side is not end:
+            if current_end_side is not end and current_end_side is not start:
                 current_end_side.make_closed_secondary()
             closed_set_end.append(current_end_side)
 

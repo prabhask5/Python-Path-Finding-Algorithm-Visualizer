@@ -42,11 +42,12 @@ def astar(draw, grid, start, end, came_from):
                     count += 1
                     open_set.put((f_score[neighbor], count, neighbor))
                     open_set_hash.add(neighbor)
-                    neighbor.make_open()
+                    if neighbor is not start and neighbor is not end:
+                        neighbor.make_open()
 
         draw()
 
-        if current != start:
+        if current is not start and current is not end:
             current.make_closed()
 
     return False
