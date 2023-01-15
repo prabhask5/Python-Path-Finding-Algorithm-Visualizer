@@ -2,7 +2,7 @@ import pygame
 from collections import deque
 
 
-def dfs(draw, start, end, came_from):
+def dfs(draw, start, end, came_from, is_progressive_generation):
     open_set = deque()
     open_set.append(start)
     closed_set = []
@@ -24,7 +24,8 @@ def dfs(draw, start, end, came_from):
                     open_set.append(neighbor)
                     if neighbor is not start and neighbor is not end:
                         neighbor.make_open()
-            draw()
+            if is_progressive_generation:
+                draw()
 
             if current is not start and current is not end:
                 current.make_closed()

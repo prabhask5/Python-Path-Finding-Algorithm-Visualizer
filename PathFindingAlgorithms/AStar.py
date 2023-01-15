@@ -8,7 +8,7 @@ def h(p1, p2):
     return abs(x1 - x2) + abs(y1 - y2)
 
 
-def astar(draw, grid, start, end, came_from):
+def astar(draw, grid, start, end, came_from, is_progressive_generation):
     count = 0
     open_set = PriorityQueue()
     open_set.put((0, count, start))
@@ -45,7 +45,8 @@ def astar(draw, grid, start, end, came_from):
                     if neighbor is not start and neighbor is not end:
                         neighbor.make_open()
 
-        draw()
+        if is_progressive_generation:
+            draw()
 
         if current is not start and current is not end:
             current.make_closed()

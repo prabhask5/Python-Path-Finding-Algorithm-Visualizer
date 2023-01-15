@@ -3,10 +3,6 @@ import random
 
 
 def generate_simple_stair(draw, grid):
-    for row in grid:
-        for spot in row:
-            spot.reset()
-
     current = grid[random.randint(0, len(grid) - 1)][0]
     dir = True  # true is up, false is down
 

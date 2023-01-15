@@ -3,10 +3,6 @@ import random
 
 
 def generate_recursive_maze(draw, grid):
-    for row in grid:
-        for spot in row:
-            spot.reset()
-
     generate_surrouding_walls(draw, grid)
     recursive_division_maze(draw, grid, 2, len(
         grid) - 3, 2, len(grid[0]) - 3, "horizontal")

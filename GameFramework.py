@@ -338,18 +338,21 @@ def get_clicked_pos(pos, cols, rows, width, height):
     return row, col
 
 
-def reconstruct_path(came_from, current, start, end, draw):
+def reconstruct_path(came_from, current, start, end, draw, is_progressive_generation):
     steps = 0
     while current in came_from:
         steps += 1
         current = came_from[current]
         if current is not start and current is not end:
             current.make_path()
+        if is_progressive_generation:
+            draw()
+    if not is_progressive_generation:
         draw()
     return steps + 1
 
 
-def reconstruct_path_bidirectional(came_from_start, came_from_end, current_start, current_end, start, end, draw):
+def reconstruct_path_bidirectional(came_from_start, came_from_end, current_start, current_end, start, end, draw, is_progressive_generation):
     intersect_to_end_path = []
     while current_end in came_from_end:
         current_end = came_from_end[current_end]
@@ -359,15 +362,20 @@ def reconstruct_path_bidirectional(came_from_start, came_from_end, current_start
     for node in intersect_to_end_path:
         if node is not start and node is not end:
             node.make_path()
-        draw()
+        if is_progressive_generation:
+            draw()
     if current_start is not start and current_start is not end:
         current_start.make_path()
-    draw()
+    if is_progressive_generation:
+        draw()
     while current_start in came_from_start:
         steps += 1
         current_start = came_from_start[current_start]
         if current_start is not start and current_start is not end:
             current_start.make_path()
+        if is_progressive_generation:
+            draw()
+    if not is_progressive_generation:
         draw()
     return steps + 1
 
@@ -431,6 +439,8 @@ diff_legend_states = [{"Quit Visualizer": "Esc",
 # in order of: A*, B A*, Genetic, DFS, BFS, B BFS, Greedy, Random
 diff_help_states = ["A* guarantees shortest path.", "Bidirectional A* guarantees shortest path.", "Genetic Path does not guarantee any found path.", "DFS does not guarantee shortest path.",
                     "BFS guarantees shortest path.", "Bidirectional BFS guarantees shortest path.", "Greedy Best-first does not guarantee shortest path.", "Random Walk does not guarantee any found path."]
+# in order of: A*, B A*, Genetic, DFS, BFS, B BFS, Greedy, Random
+final_path_active = [False for _ in range(8)]
 while run:
     event_list = pygame.event.get()
     for event in event_list:
@@ -445,15 +455,17 @@ while run:
                             if not (spot.is_start() or spot.is_end() or spot.is_barrier()):
                                 spot.reset()
                             spot.update_neighbors(grid)
+                    final_path_active = [False for _ in range(8)]
                     if selected_algo == "A-Star":
                         came_from = {}
                         diff_generations_running[0] = True
                         path_found = astar(lambda: draw(
-                            screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), grid, start, end, came_from)
+                            screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), grid, start, end, came_from, True)
                         if path_found:
                             path_length = reconstruct_path(came_from, end, start, end, lambda: draw(
-                                screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
+                                screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), True)
                             help_text = f"Path length: {path_length}"
+                            final_path_active[0] = True
                         else:
                             help_text = "Unfortunately, no path was found between the current start and end nodes."
                         diff_generations_running[0] = False
@@ -461,11 +473,12 @@ while run:
                         came_from_start, came_from_end = {}, {}
                         diff_generations_running[1] = True
                         path_found, intersect_node = bidirectional_astar(lambda: draw(
-                            screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), grid, start, end, came_from_start, came_from_end)
+                            screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), grid, start, end, came_from_start, came_from_end, True)
                         if path_found:
                             path_length = reconstruct_path_bidirectional(came_from_start, came_from_end, intersect_node, intersect_node, start, end, lambda: draw(
-                                screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
+                                screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), True)
                             help_text = f"Path length: {path_length}"
+                            final_path_active[1] = True
                         else:
                             help_text = "Unfortunately, no path was found between the current start and end nodes."
                         diff_generations_running[1] = False
@@ -476,8 +489,9 @@ while run:
                             screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), start, end, came_from)
                         if path_found:
                             path_length = reconstruct_path(came_from, start, start, end, lambda: draw(
-                                screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
+                                screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), True)
                             help_text = f"Path length: {path_length}"
+                            final_path_active[2] = True
                         else:
                             help_text = "Unfortunately, no path was found between the current start and end nodes."
                         diff_generations_running[2] = False
@@ -485,11 +499,12 @@ while run:
                         came_from = {}
                         diff_generations_running[3] = True
                         path_found = dfs(lambda: draw(
-                            screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), start, end, came_from)
+                            screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), start, end, came_from, True)
                         if path_found:
                             path_length = reconstruct_path(came_from, end, start, end, lambda: draw(
-                                screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
+                                screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), True)
                             help_text = f"Path length: {path_length}"
+                            final_path_active[3] = True
                         else:
                             help_text = "Unfortunately, no path was found between the current start and end nodes."
                         diff_generations_running[3] = False
@@ -497,11 +512,12 @@ while run:
                         came_from = {}
                         diff_generations_running[4] = True
                         path_found = bfs(lambda: draw(
-                            screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), start, end, came_from)
+                            screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), start, end, came_from, True)
                         if path_found:
                             path_length = reconstruct_path(came_from, end, start, end, lambda: draw(
-                                screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
+                                screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), True)
                             help_text = f"Path length: {path_length}"
+                            final_path_active[4] = True
                         else:
                             help_text = "Unfortunately, no path was found between the current start and end nodes."
                         diff_generations_running[4] = False
@@ -509,11 +525,12 @@ while run:
                         came_from_start, came_from_end = {}, {}
                         diff_generations_running[5] = True
                         path_found, intersect_node = bidirectional_bfs(lambda: draw(
-                            screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), start, end, came_from_start, came_from_end)
+                            screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), start, end, came_from_start, came_from_end, True)
                         if path_found:
                             path_length = reconstruct_path_bidirectional(came_from_start, came_from_end, intersect_node, intersect_node, start, end, lambda: draw(
-                                screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
+                                screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), True)
                             help_text = f"Path length: {path_length}"
+                            final_path_active[5] = True
                         else:
                             help_text = "Unfortunately, no path was found between the current start and end nodes."
                         diff_generations_running[5] = False
@@ -521,11 +538,12 @@ while run:
                         came_from = {}
                         diff_generations_running[6] = False
                         path_found = greedy(lambda: draw(
-                            screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), start, end, came_from)
+                            screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), start, end, came_from, True)
                         if path_found:
                             path_length = reconstruct_path(came_from, end, start, end, lambda: draw(
-                                screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
+                                screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), True)
                             help_text = f"Path length: {path_length}"
+                            final_path_active[6] = True
                         else:
                             help_text = "Unfortunately, no path was found between the current start and end nodes."
                         diff_generations_running[6] = False
@@ -536,8 +554,9 @@ while run:
                             screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), start, end, came_from)
                         if path_found:
                             path_length = reconstruct_path(came_from, end, start, end, lambda: draw(
-                                screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT))
+                                screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), True)
                             help_text = f"Path length: {path_length}"
+                            final_path_active[7] = True
                         else:
                             help_text = "Unfortunately, no path was found between the current start and end nodes."
                         diff_generations_running[7] = False
@@ -573,6 +592,51 @@ while run:
                         start = None
                     end = spot
                     spot.make_end()
+                if selected_mode == "Select Start" or selected_mode == "Select End":
+                    if any(final_path_active):
+                        for row in grid:
+                            for spot in row:
+                                if not (spot.is_start() or spot.is_end() or spot.is_barrier()):
+                                    spot.reset()
+                                spot.update_neighbors(grid)
+                    came_from, came_from_start, came_from_end = {}, {}, {}
+                    path_found, intersect_node = False, None
+                    def draw_func(): draw(screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT)
+                    if start and end:
+                        if final_path_active[0]:
+                            path_found = astar(
+                                draw_func, grid, start, end, came_from, False)
+                        elif final_path_active[1]:
+                            path_found, intersect_node = bidirectional_astar(
+                                draw_func, grid, start, end, came_from_start, came_from_end, False)
+                        elif final_path_active[3]:
+                            path_found = dfs(draw_func, start,
+                                             end, came_from, False)
+                        elif final_path_active[4]:
+                            path_found = bfs(draw_func, start,
+                                             end, came_from, False)
+                        elif final_path_active[5]:
+                            path_found, intersect_node = bidirectional_bfs(
+                                draw_func, start, end, came_from_start, came_from_end, False)
+                        elif final_path_active[6]:
+                            path_found = greedy(
+                                draw_func, start, end, came_from, False)
+
+                        if any([final_path_active[0], final_path_active[3], final_path_active[4], final_path_active[6]]):
+                            if path_found:
+                                path_length = reconstruct_path(
+                                    came_from, end, start, end, draw_func, False)
+                                help_text = f"Path length: {path_length}"
+                            else:
+                                help_text = "Unfortunately, no path was found between the current start and end nodes."
+                        elif any([final_path_active[1], final_path_active[5]]):
+                            if path_found:
+                                path_length = reconstruct_path_bidirectional(
+                                    came_from_start, came_from_end, intersect_node, intersect_node, start, end, draw_func, False)
+                                help_text = f"Path length: {path_length}"
+                            else:
+                                help_text = "Unfortunately, no path was found between the current start and end nodes."
+
         elif pygame.mouse.get_pressed()[2]:  # RIGHT
             pos = pygame.mouse.get_pos()
             if not backRect.collidepoint(pos):
@@ -597,6 +661,7 @@ while run:
                 legend = {"Quit Visualizer": "Esc",
                           "Start": ORANGE, "End": BLUE, "Obstacle": BLACK}
                 help_text = "Welcome! Pick start and end nodes and draw obstacles using the ‘Select Mode’ tab. Generate more complex mazes using the ‘Select Maze Type’ tab. When start and end nodes are selected, choose an algorithm to find a path between them using the ‘’Select Algorithm’ tab."
+                final_path_active = [False for _ in range(8)]
             if event.key == pygame.K_ESCAPE:
                 run = False
 
@@ -607,24 +672,53 @@ while run:
     algo_selected_option = algo_dd.update(event_list, algo_others_open)
     if algo_selected_option >= 0:
         algo_dd.main = algo_dd.options[algo_selected_option]
-        selected_algo = algo_options[algo_selected_option]
+        new_selected_algo = algo_options[algo_selected_option]
         legend = diff_legend_states[algo_selected_option]
         help_text = diff_help_states[algo_selected_option]
+        if new_selected_algo != selected_algo:
+            for row in grid:
+                for spot in row:
+                    if not (spot.is_start() or spot.is_end() or spot.is_barrier()):
+                        spot.reset()
+            final_path_active = [False for _ in range(8)]
+        selected_algo = new_selected_algo
 
     path_selected_option = path_dd.update(event_list, path_others_open)
     if path_selected_option >= 0:
         path_dd.main = path_dd.options[path_selected_option]
         new_selected_path = path_options[path_selected_option]
+        final_path_active = [False for _ in range(8)]
         if new_selected_path == "Recursive Division" and not selected_path == "Recursive Division":
+            for row in grid:
+                for spot in row:
+                    spot.reset()
+                    if spot == start:
+                        start = None
+                    elif spot == end:
+                        end = None
             diff_generations_running[8] = True
             generate_recursive_maze(lambda: draw(
                 screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), grid)
             diff_generations_running[8] = False
         elif new_selected_path == "Basic Random" and not selected_path == "Basic Random":
+            for row in grid:
+                for spot in row:
+                    spot.reset()
+                    if spot == start:
+                        start = None
+                    elif spot == end:
+                        end = None
             diff_generations_running[8] = True
             generate_random_maze(grid)
             diff_generations_running[8] = False
         elif new_selected_path == "Simple Stair" and not selected_path == "Simple Stair":
+            for row in grid:
+                for spot in row:
+                    spot.reset()
+                    if spot == start:
+                        start = None
+                    elif spot == end:
+                        end = None
             diff_generations_running[8] = True
             generate_simple_stair(lambda: draw(
                 screen, grid, COLUMNS, ROWS, WIDTH, HEIGHT), grid)

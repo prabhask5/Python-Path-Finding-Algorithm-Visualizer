@@ -2,7 +2,7 @@ import pygame
 from queue import Queue
 
 
-def bidirectional_bfs(draw, start, end, came_from_start, came_from_end):
+def bidirectional_bfs(draw, start, end, came_from_start, came_from_end, is_progressive_generation):
     open_set_start = Queue()
     open_set_end = Queue()
     open_set_start.put(start)
@@ -48,6 +48,7 @@ def bidirectional_bfs(draw, start, end, came_from_start, came_from_end):
                 current_end_side.make_closed_secondary()
             closed_set_end.append(current_end_side)
 
-        draw()
+        if is_progressive_generation:
+            draw()
 
     return False, None

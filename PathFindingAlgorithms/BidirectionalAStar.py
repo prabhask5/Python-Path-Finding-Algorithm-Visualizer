@@ -8,7 +8,7 @@ def h(p1, p2):
     return abs(x1 - x2) + abs(y1 - y2)
 
 
-def bidirectional_astar(draw, grid, start, end, came_from_start, came_from_end):
+def bidirectional_astar(draw, grid, start, end, came_from_start, came_from_end, is_progressive_generation):
     count_start = 0
     count_end = 0
     open_set_start = PriorityQueue()
@@ -76,6 +76,7 @@ def bidirectional_astar(draw, grid, start, end, came_from_start, came_from_end):
                 current_end_side.make_closed_secondary()
             closed_set_end.append(current_end_side)
 
-        draw()
+        if is_progressive_generation:
+            draw()
 
     return False, None
