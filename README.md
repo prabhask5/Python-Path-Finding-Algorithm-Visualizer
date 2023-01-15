@@ -24,7 +24,7 @@ This application supports the following algorithms:
 
 On top of the pathfinding algorithms listed above, I implemented a **Recursive Division** Maze Generation algorithm.
 
-Additional feature: After initial path generation of a specific algoreithm is complete, drag the start and end points of the final path around to see your path continually change. You can even add obstacles and drag around the start and end points to see your final path update in real time!
+Additional feature: After initial path generation of a specific algorithm is complete, drag the start and end points of the final path around to see your path continually change. You can even add obstacles and drag around the start and end points to see your final path update in real time!
 
 ## More About the Genetic Path Algorithm
 
